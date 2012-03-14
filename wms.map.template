@@ -1,0 +1,294 @@
+MAP
+  NAME "oam"
+  STATUS ON
+  SIZE 600 400
+  UNITS DD
+  EXTENT -180 -90 180 90
+
+  IMAGETYPE PNG24
+  TRANSPARENT TRUE
+  FONTSET "fonts.lst"
+
+  PROJECTION
+    "init=epsg:4326"
+  END
+
+  WEB
+    METADATA
+      "ows_enable_request"  "*"
+      "wms_title"           "OAM WFS"
+      "wms_onlineresource"  "http://openaviationmap.org/cgi-bin/mapserv?map=../wms.map&"
+      "wms_srs"             "EPSG:4269 EPSG:4326 EPSG:3857 EPSG:900913"
+      "wms_feature_info_mime_type" "text/html"
+    END
+  END
+
+  SYMBOL
+    NAME "aerodrome"
+    TYPE pixmap
+    IMAGE "icons/aerodrome.png"
+  END
+  SYMBOL
+    NAME "navaid"
+    TYPE pixmap
+    IMAGE "icons/navaid.png"
+  END
+  SYMBOL
+    NAME "ndb"
+    TYPE pixmap
+    IMAGE "icons/ndb.png"
+  END
+  SYMBOL
+    NAME "dme"
+    TYPE pixmap
+    IMAGE "icons/dme.png"
+  END
+  SYMBOL
+    NAME "tacan"
+    TYPE pixmap
+    IMAGE "icons/tacan.png"
+  END
+  SYMBOL
+    NAME "vor"
+    TYPE pixmap
+    IMAGE "icons/vor.png"
+  END
+  SYMBOL
+    NAME "vor_dme"
+    TYPE pixmap
+    IMAGE "icons/vor_dme.png"
+  END
+  SYMBOL
+    NAME "vor_tacan"
+    TYPE pixmap
+    IMAGE "icons/vor_tacan.png"
+  END
+  SYMBOL
+    NAME "vfrreportingpoint"
+    TYPE pixmap
+    IMAGE "icons/vfrreportingpoint.png"
+  END
+  SYMBOL
+    NAME "obstacle"
+    TYPE pixmap
+    IMAGE "icons/obstacle.png"
+  END
+
+  LAYER
+    NAME "oam-point"
+    STATUS ON
+    TYPE POINT
+
+    DUMP TRUE # to serve gml
+
+    CONNECTIONTYPE POSTGIS
+    CONNECTION "host=127.0.0.1 port=5432 dbname=lys_wfs user=openstreetmap password=openstreetmap"
+
+    DATA "geom FROM nodes using unique id using srid=4326"
+
+    CLASSITEM "tags"
+
+    CLASS
+      EXPRESSION /.*\"aerodrome\"=>\"yes\".*/
+      STYLE
+        COLOR 255 0 0
+        OUTLINECOLOR 0 0 255
+        SYMBOL "aerodrome"
+        SIZE 32
+      END
+    END
+
+    #NAVAID CHECKS
+    CLASS
+      EXPRESSION /.*\"navaid\"=>\"yes\".*/
+      EXPRESSION /.*\"navaid:vor\"=>\".*/
+      EXPRESSION /.*\"navaid:tacan\"=>\".*/
+      STYLE
+        SYMBOL "vor_tacan"
+        SIZE 32
+      END
+    END
+
+    CLASS
+      EXPRESSION /.*\"navaid\"=>\"yes\".*/
+      EXPRESSION /.*\"navaid:vor\"=>\".*/
+      EXPRESSION /.*\"navaid:dme\"=>\".*/
+      STYLE
+        SYMBOL "vor_dme"
+        SIZE 32
+      END
+    END
+
+    CLASS
+      EXPRESSION /.*\"navaid\"=>\"yes\".*/
+      EXPRESSION /.*\"navaid:vor\"=>\".*/
+      STYLE
+        SYMBOL "vor"
+        SIZE 32
+      END
+    END
+
+    CLASS
+      EXPRESSION /.*\"navaid\"=>\"yes\".*/
+      EXPRESSION /.*\"navaid:ndb\"=>\".*/
+      STYLE
+        SYMBOL "ndb"
+        SIZE 32
+      END
+    END
+
+    CLASS
+      EXPRESSION /.*\"navaid\"=>\"yes\".*/
+      EXPRESSION /.*\"navaid:dme\"=>\".*/
+      STYLE
+        SYMBOL "dme"
+        SIZE 32
+      END
+    END
+
+    CLASS
+      EXPRESSION /.*\"navaid\"=>\"yes\".*/
+      EXPRESSION /.*\"navaid:tacan\"=>\".*/
+      STYLE
+        SYMBOL "tacan"
+        SIZE 32
+      END
+    END
+
+    CLASS
+      EXPRESSION /.*\"navaid\"=>\"yes\".*/
+      STYLE
+        SYMBOL "navaid"
+        SIZE 32
+      END
+    END
+
+    CLASS
+      EXPRESSION /.*\"vfrreportingpoint\"=>\"yes\".*/
+      STYLE
+        SYMBOL "vfrreportingpoint"
+        SIZE 32
+      END
+    END
+
+    CLASS
+      EXPRESSION /.*\"obstacle\"=>\"yes\".*/
+      STYLE
+        SYMBOL "obstacle"
+        SIZE 32
+      END
+    END
+    
+    METADATA
+      "gml_include_items" "tags,rel_tags" #to read the tags of the features
+      "wfs_include_items" "tags,rel_tags" #to read the tags of the features
+    END
+
+    TEMPLATE "tags.html" #template must be defined for serving feature info
+  END
+
+  LAYER
+    NAME "oam-line"
+    STATUS ON
+    TYPE LINE
+
+    DUMP TRUE # to serve gml
+
+    CONNECTIONTYPE POSTGIS
+    CONNECTION "host=127.0.0.1 port=5432 dbname=lys_wfs user=openstreetmap password=openstreetmap"
+
+    DATA "geom FROM ways using unique id using srid=4326"
+
+    SIZEUNITS meters
+    SYMBOLSCALEDENOM 150000
+    CLASSITEM "tags"
+
+    CLASS
+      MAXSCALEDENOM 150000
+      EXPRESSION /.*\"aeroway\"=>\"runway\".*/
+      STYLE
+        WIDTH 50
+        COLOR 80 80 80
+      END
+    END
+
+    CLASS
+      MAXSCALEDENOM 150000
+      EXPRESSION /.*\"aeroway\"=>\"taxiway\".*/
+      STYLE
+        WIDTH 20
+        COLOR 80 80 80
+      END
+    END
+
+    CLASS
+      STYLE
+        COLOR 255 0 0
+      END
+    END
+
+    METADATA
+      "gml_include_items" "tags,rel_tags" #to read the tags of the features
+      "wfs_include_items" "tags,rel_tags" #to read the tags of the features
+    END
+
+    TEMPLATE "tags.html" #template must be defined for serving feature info
+  END
+
+  LAYER
+    NAME "oam-area"
+    STATUS ON
+    TYPE POLYGON
+
+
+    DUMP TRUE # to serve gml
+
+    CONNECTIONTYPE POSTGIS
+    CONNECTION "host=127.0.0.1 port=5432 dbname=lys_wfs user=openstreetmap password=openstreetmap"
+
+    DATA "geom FROM (SELECT id,geom,tags,tags->'icao' as icao,tags->'height:lower' as lower,tags->'height:lower:unit' AS lunit, tags->'height:upper:unit' AS uunit,tags->'height:upper' as upper,tags->'airspace:class' as class,tags->'airspace:type' as type FROM areas) AS foo using unique id using srid=4326"
+
+    CLASSITEM "tags"
+    LABELITEM "upper"
+    CLASS
+      EXPRESSION /.*\"airspace\"=>\"yes\".*/
+      TEXT '[icao] [type]![class]!![upper][uunit]!-----![lower][lunit]'
+      LABEL
+        REPEATDISTANCE 1000 #distance between labels in pixels
+        ALIGN center
+        WRAP '!'
+        COLOR  0 0 0
+        OUTLINECOLOR 255 255 255
+        FONT "arial"
+        TYPE truetype
+        SIZE 10
+        POSITION AUTO
+        PARTIALS FALSE
+        STYLE
+          GEOMTRANSFORM 'labelpoly'
+          OPACITY 70
+          COLOR 255 255 255
+        END # STYLE
+      END
+      STYLE
+        COLOR 0 0 255
+        OUTLINECOLOR 0 0 255
+        OPACITY 20
+      END
+    END
+
+    CLASS
+      EXPRESSION /.*\"aeroway\"=>\"apron\".*/
+      STYLE
+        COLOR 50 50 50
+      END
+    END
+
+    METADATA
+      "gml_include_items" "tags,rel_tags" #to read the tags of the features
+      "wfs_include_items" "tags,rel_tags" #to read the tags of the features
+    END
+
+    TEMPLATE "tags.html" #template must be defined for serving feature info
+  END
+END

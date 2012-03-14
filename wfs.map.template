@@ -1,0 +1,65 @@
+MAP
+  NAME "mapserver"
+  STATUS ON
+  SIZE 400 300
+  EXTENT -180 -90 180 90
+  UNITS DD
+  WEB
+    METADATA
+      "wfs_onlineresource" "http://openaviationmap.org/cgi-bin/mapserv?map=../test.map&"
+      "wfs_enable_request" "*"  # necessary
+      "wfs_encoding" "UTF-8"
+    END
+  END
+  LAYER
+    NAME "LysWfsNode"
+    TYPE POINT
+    STATUS ON
+    CONNECTIONTYPE POSTGIS
+    CONNECTION "host=127.0.0.1 port=5432 dbname=lys_wfs user=openstreetmap password=openstreetmap"
+    PROJECTION
+        "init=epsg:4326"
+    END
+
+    DATA "geom FROM nodes using unique id using srid=4326"
+    METADATA
+      "wfs_title" "LysWfsNode"
+      "gml_featureid" "id"
+      "gml_include_items" "tags,rel_tags"
+    END
+  END
+  LAYER
+    NAME "LysWfsLine"
+    TYPE LINE
+    STATUS ON
+    CONNECTIONTYPE POSTGIS
+    CONNECTION "host=127.0.0.1 port=5432 dbname=lys_wfs user=openstreetmap password=openstreetmap"
+    PROJECTION
+        "init=epsg:4326"
+    END
+
+    DATA "geom FROM ways using unique id using srid=4326"
+    METADATA
+      "wfs_title" "LysWfsLine"
+      "gml_featureid" "id"
+      "gml_include_items" "tags,rel_tags"
+    END
+  END
+  LAYER
+    NAME "LysWfsArea"
+    TYPE POLYGON
+    STATUS ON
+    CONNECTIONTYPE POSTGIS
+    CONNECTION "host=127.0.0.1 port=5432 dbname=lys_wfs user=openstreetmap password=openstreetmap"
+    PROJECTION
+        "init=epsg:4326"
+    END
+
+    DATA "geom FROM areas using unique id using srid=4326"
+    METADATA
+      "wfs_title" "LysWfsArea"
+      "gml_featureid" "id"
+      "gml_include_items" "tags,rel_tags"
+    END
+  END
+END
