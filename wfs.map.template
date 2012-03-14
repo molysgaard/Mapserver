@@ -16,7 +16,7 @@ MAP
     TYPE POINT
     STATUS ON
     CONNECTIONTYPE POSTGIS
-    CONNECTION "host=127.0.0.1 port=5432 dbname=lys_wfs user=openstreetmap password=openstreetmap"
+    #CONNECTION "host=127.0.0.1 port=5432 dbname=database user=user password=password"
     PROJECTION
         "init=epsg:4326"
     END
@@ -33,7 +33,7 @@ MAP
     TYPE LINE
     STATUS ON
     CONNECTIONTYPE POSTGIS
-    CONNECTION "host=127.0.0.1 port=5432 dbname=lys_wfs user=openstreetmap password=openstreetmap"
+    #CONNECTION "host=127.0.0.1 port=5432 dbname=database user=user password=password"
     PROJECTION
         "init=epsg:4326"
     END
@@ -50,7 +50,7 @@ MAP
     TYPE POLYGON
     STATUS ON
     CONNECTIONTYPE POSTGIS
-    CONNECTION "host=127.0.0.1 port=5432 dbname=lys_wfs user=openstreetmap password=openstreetmap"
+    #CONNECTION "host=127.0.0.1 port=5432 dbname=database user=user password=password"
     PROJECTION
         "init=epsg:4326"
     END

@@ -26,52 +26,52 @@ MAP
   SYMBOL
     NAME "aerodrome"
     TYPE pixmap
-    IMAGE "icons/aerodrome.png"
+    IMAGE "icons/renders/32/aerodrome.png"
   END
   SYMBOL
     NAME "navaid"
     TYPE pixmap
-    IMAGE "icons/navaid.png"
+    IMAGE "icons/renders/32/navaid.png"
   END
   SYMBOL
     NAME "ndb"
     TYPE pixmap
-    IMAGE "icons/ndb.png"
+    IMAGE "icons/renders/32/ndb.png"
   END
   SYMBOL
     NAME "dme"
     TYPE pixmap
-    IMAGE "icons/dme.png"
+    IMAGE "icons/renders/32/dme.png"
   END
   SYMBOL
     NAME "tacan"
     TYPE pixmap
-    IMAGE "icons/tacan.png"
+    IMAGE "icons/renders/32/tacan.png"
   END
   SYMBOL
     NAME "vor"
     TYPE pixmap
-    IMAGE "icons/vor.png"
+    IMAGE "icons/renders/32/vor.png"
   END
   SYMBOL
     NAME "vor_dme"
     TYPE pixmap
-    IMAGE "icons/vor_dme.png"
+    IMAGE "icons/renders/32/vor_dme.png"
   END
   SYMBOL
     NAME "vor_tacan"
     TYPE pixmap
-    IMAGE "icons/vor_tacan.png"
+    IMAGE "icons/renders/32/vor_tacan.png"
   END
   SYMBOL
     NAME "vfrreportingpoint"
     TYPE pixmap
-    IMAGE "icons/vfrreportingpoint.png"
+    IMAGE "icons/renders/32/vfrreportingpoint.png"
   END
   SYMBOL
     NAME "obstacle"
     TYPE pixmap
-    IMAGE "icons/obstacle.png"
+    IMAGE "icons/renders/32/obstacle.png"
   END
 
   LAYER
@@ -82,7 +82,7 @@ MAP
     DUMP TRUE # to serve gml
 
     CONNECTIONTYPE POSTGIS
-    CONNECTION "host=127.0.0.1 port=5432 dbname=lys_wfs user=openstreetmap password=openstreetmap"
+    #CONNECTION "host=127.0.0.1 port=5432 dbname=database user=user password=password"
 
     DATA "geom FROM nodes using unique id using srid=4326"
 
@@ -195,7 +195,7 @@ MAP
     DUMP TRUE # to serve gml
 
     CONNECTIONTYPE POSTGIS
-    CONNECTION "host=127.0.0.1 port=5432 dbname=lys_wfs user=openstreetmap password=openstreetmap"
+    #CONNECTION "host=127.0.0.1 port=5432 dbname=database user=user password=password"
 
     DATA "geom FROM ways using unique id using srid=4326"
 
@@ -244,7 +244,7 @@ MAP
     DUMP TRUE # to serve gml
 
     CONNECTIONTYPE POSTGIS
-    CONNECTION "host=127.0.0.1 port=5432 dbname=lys_wfs user=openstreetmap password=openstreetmap"
+    #CONNECTION "host=127.0.0.1 port=5432 dbname=database user=user password=password"
 
     DATA "geom FROM (SELECT id,geom,tags,tags->'icao' as icao,tags->'height:lower' as lower,tags->'height:lower:unit' AS lunit, tags->'height:upper:unit' AS uunit,tags->'height:upper' as upper,tags->'airspace:class' as class,tags->'airspace:type' as type FROM areas) AS foo using unique id using srid=4326"
 
